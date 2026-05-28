@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Analysis Loading - ReverseSaaS</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-container": "#00a2e6",
+                        "primary": "#4edea3",
+                        "surface-container-lowest": "#0e0e0e",
+                        "secondary-fixed": "#c9e6ff",
+                        "background": "#131313",
+                        "on-background": "#e5e2e1",
+                        "primary-fixed-dim": "#4edea3",
+                        "on-tertiary": "#472a00",
+                        "surface": "#131313",
+                        "inverse-primary": "#006c49",
+                        "tertiary-container": "#e29100",
+                        "on-error": "#690005",
+                        "on-primary-fixed-variant": "#005236",
+                        "inverse-surface": "#e5e2e1",
+                        "surface-container-highest": "#353534",
+                        "on-secondary-fixed-variant": "#004c6e",
+                        "primary-fixed": "#6ffbbe",
+                        "error-container": "#93000a",
+                        "on-surface": "#e5e2e1",
+                        "secondary-fixed-dim": "#89ceff",
+                        "surface-bright": "#3a3939",
+                        "on-secondary-container": "#00344e",
+                        "outline": "#86948a",
+                        "outline-variant": "#3c4a42",
+                        "on-primary-container": "#00422b",
+                        "primary-container": "#10b981",
+                        "error": "#ffb4ab",
+                        "surface-tint": "#4edea3",
+                        "on-primary": "#003824",
+                        "surface-container-low": "#1c1b1b",
+                        "on-surface-variant": "#bbcabf",
+                        "on-primary-fixed": "#002113",
+                        "tertiary-fixed-dim": "#ffb95f",
+                        "inverse-on-surface": "#313030",
+                        "on-secondary": "#00344d",
+                        "surface-variant": "#353534",
+                        "on-error-container": "#ffdad6",
+                        "on-secondary-fixed": "#001e2f",
+                        "on-tertiary-fixed-variant": "#653e00",
+                        "surface-container": "#201f1f",
+                        "surface-container-high": "#2a2a2a",
+                        "tertiary-fixed": "#ffddb8",
+                        "on-tertiary-fixed": "#2a1700",
+                        "tertiary": "#ffb95f",
+                        "secondary": "#89ceff",
+                        "surface-dim": "#131313",
+                        "on-tertiary-container": "#523200"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "margin-page": "40px",
+                        "gutter": "24px",
+                        "unit": "4px",
+                        "panel-padding": "16px",
+                        "stack-gap": "8px"
+                    },
+                    "fontFamily": {
+                        "body-base": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "code-sm": ["JetBrains Mono"],
+                        "label-caps": ["JetBrains Mono"]
+                    },
+                    "fontSize": {
+                        "body-base": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "code-sm": ["13px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "label-caps": ["11px", { "lineHeight": "16px", "letterSpacing": "0.08em", "fontWeight": "600" }]
+                    },
+                    "animation": {
+                        "spin-slow": "spin 8s linear infinite",
+                        "scan": "scan 3s ease-in-out infinite alternate",
+                        "pulse-glow": "pulse-glow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+                        "pop": "pop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards",
+                        "swirl": "swirl 10s ease infinite"
+                    },
+                    "keyframes": {
+                        "scan": {
+                            "0%": { transform: "translateY(-100%)", opacity: "0.2" },
+                            "50%": { opacity: "1" },
+                            "100%": { transform: "translateY(200%)", opacity: "0.2" }
+                        },
+                        "pulse-glow": {
+                            "0%, 100%": { opacity: "1", transform: "scale(1)", boxShadow: "inset 0 0 20px rgba(78, 222, 163, 0.2)" },
+                            "50%": { opacity: ".7", transform: "scale(1.05)", boxShadow: "inset 0 0 40px rgba(78, 222, 163, 0.6)" }
+                        },
+                        "pop": {
+                            "0%": { transform: "scale(0)", opacity: "0" },
+                            "100%": { transform: "scale(1)", opacity: "1" }
+                        },
+                        "swirl": {
+                            "0%": { backgroundPosition: "0% 50%" },
+                            "50%": { backgroundPosition: "100% 50%" },
+                            "100%": { backgroundPosition: "0% 50%" }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            background-color: #050505;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.01) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.01) 1px, transparent 1px);
+            background-size: 32px 32px;
+            overflow: hidden;
+        }
+        .voxel-cube {
+            transform-style: preserve-3d;
+            width: 120px;
+            height: 120px;
+            animation: spin-slow 12s linear infinite;
+        }
+        .voxel-face {
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            border: 1px solid rgba(78, 222, 163, 0.5);
+            background: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(4px);
+            box-shadow: inset 0 0 20px rgba(78, 222, 163, 0.2);
+            animation: pulse-glow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        .voxel-face:nth-child(1) { transform: translateZ(60px); }
+        .voxel-face:nth-child(2) { transform: rotateY(180deg) translateZ(60px); }
+        .voxel-face:nth-child(3) { transform: rotateY(90deg) translateZ(60px); }
+        .voxel-face:nth-child(4) { transform: rotateY(-90deg) translateZ(60px); }
+        .voxel-face:nth-child(5) { transform: rotateX(90deg) translateZ(60px); }
+        .voxel-face:nth-child(6) { transform: rotateX(-90deg) translateZ(60px); }
+        
+        @keyframes spin-slow {
+            0% { transform: rotateX(0deg) rotateY(0deg); }
+            100% { transform: rotateX(360deg) rotateY(360deg); }
+        }
+
+        .terminal-scroll::-webkit-scrollbar {
+            width: 4px;
+        }
+        .terminal-scroll::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .terminal-scroll::-webkit-scrollbar-thumb {
+            background: rgba(78, 222, 163, 0.2);
+            border-radius: 2px;
+        }
+    </style>
+</head>
+<body class="text-on-background h-screen w-screen flex flex-col md:flex-row">
+<!-- Loading Content Area (Transactional, so nav shell is suppressed per guidelines) -->
+<!-- Left/Top Sidebar: Progress Steps -->
+<div class="w-full md:w-[320px] bg-surface-container-low/90 backdrop-blur-xl border-b md:border-b-0 md:border-r border-outline-variant/20 shadow-[4px_0_24px_rgba(0,0,0,0.5)] flex flex-col p-panel-padding z-10">
+<div class="mb-8 mt-4 px-2">
+<h1 class="font-headline-md text-headline-md text-primary tracking-tighter">ReverseSaaS</h1>
+<p class="font-code-sm text-code-sm text-on-surface-variant mt-1">Analysis Protocol Initiated</p>
+</div>
+<div class="flex-1 flex flex-col gap-6 px-2 overflow-y-auto">
+<!-- Step 1: Complete -->
+<div class="flex items-start gap-4">
+<div class="mt-0.5 flex flex-col items-center">
+<div class="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center border border-primary/50 shadow-[0_0_10px_rgba(78,222,163,0.3)]">
+<span class="material-symbols-outlined text-[14px] text-primary animate-pop" style="font-variation-settings: 'FILL' 1;">check</span>
+</div>
+<div class="w-[1px] h-8 bg-primary/30 mt-2"></div>
+</div>
+<div>
+<h3 class="font-label-caps text-label-caps text-primary">Crawling Website</h3>
+<p class="font-code-sm text-code-sm text-on-surface-variant/70 mt-1">100% complete - 42 pages found</p>
+</div>
+</div>
+<!-- Step 2: Complete -->
+<div class="flex items-start gap-4">
+<div class="mt-0.5 flex flex-col items-center">
+<div class="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center border border-primary/50 shadow-[0_0_10px_rgba(78,222,163,0.3)]">
+<span class="material-symbols-outlined text-[14px] text-primary animate-pop" style="font-variation-settings: 'FILL' 1; animation-delay: 200ms;">check</span>
+</div>
+<div class="w-[1px] h-8 bg-primary/30 mt-2"></div>
+</div>
+<div>
+<h3 class="font-label-caps text-label-caps text-primary">Discovering Pages</h3>
+<p class="font-code-sm text-code-sm text-on-surface-variant/70 mt-1">Sitemap parsed successfully</p>
+</div>
+</div>
+<!-- Step 3: Active -->
+<div class="flex items-start gap-4">
+<div class="mt-0.5 flex flex-col items-center">
+<div class="w-6 h-6 rounded-full bg-surface-bright flex items-center justify-center border border-primary shadow-[0_0_15px_rgba(78,222,163,0.5)] animate-pulse-glow">
+<div class="w-2 h-2 rounded-full bg-primary animate-pop" style="animation-delay: 400ms;"></div>
+</div>
+<div class="w-[1px] h-8 bg-outline-variant/30 mt-2"></div>
+</div>
+<div>
+<h3 class="font-label-caps text-label-caps text-on-surface">Analyzing Tech Stack</h3>
+<p class="font-code-sm text-code-sm text-on-surface-variant mt-1">Scanning headers and scripts...</p>
+</div>
+</div>
+<!-- Step 4: Pending -->
+<div class="flex items-start gap-4">
+<div class="mt-0.5 flex flex-col items-center">
+<div class="w-6 h-6 rounded-full bg-surface-container flex items-center justify-center border border-outline-variant/50">
+<div class="w-1.5 h-1.5 rounded-full bg-outline-variant/50"></div>
+</div>
+<div class="w-[1px] h-8 bg-outline-variant/30 mt-2"></div>
+</div>
+<div>
+<h3 class="font-label-caps text-label-caps text-on-surface-variant">Generating Node Graph</h3>
+<p class="font-code-sm text-code-sm text-on-surface-variant/50 mt-1">Pending...</p>
+</div>
+</div>
+<!-- Step 5: Pending -->
+<div class="flex items-start gap-4">
+<div class="mt-0.5 flex flex-col items-center">
+<div class="w-6 h-6 rounded-full bg-surface-container flex items-center justify-center border border-outline-variant/50">
+<div class="w-1.5 h-1.5 rounded-full bg-outline-variant/50"></div>
+</div>
+</div>
+<div>
+<h3 class="font-label-caps text-label-caps text-on-surface-variant">Estimating Costs</h3>
+<p class="font-code-sm text-code-sm text-on-surface-variant/50 mt-1">Pending...</p>
+</div>
+</div>
+</div>
+<div class="mt-4 px-2">
+<button class="w-full py-2 px-4 border border-outline-variant/50 text-on-surface-variant font-label-caps text-label-caps rounded flex justify-center items-center gap-2 hover:bg-surface-variant/50 transition-colors">
+<span class="material-symbols-outlined text-[16px]">cancel</span>
+                Abort Process
+            </button>
+</div>
+</div>
+<!-- Main Canvas: AI Core & Terminal -->
+<div class="flex-1 flex flex-col relative overflow-hidden">
+<!-- Energy Beams / Atmosphere Background -->
+<div class="absolute inset-0 pointer-events-none z-0">
+<div class="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(78,222,163,0.1),transparent_60%)] bg-[size:200%_200%] animate-swirl"></div>
+<div class="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-primary/5 blur-[120px] rounded-full"></div>
+<div class="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] bg-[#8b5cf6]/5 blur-[150px] rounded-full"></div>
+</div>
+<!-- AI Core Display -->
+<div class="flex-1 flex items-center justify-center relative z-10">
+<div class="relative w-64 h-64 flex items-center justify-center">
+<!-- Outer Glow -->
+<div class="absolute inset-0 bg-primary/10 blur-[40px] rounded-full animate-pulse-glow"></div>
+<!-- Scanning Beam container -->
+<div class="absolute inset-0 overflow-hidden rounded-full pointer-events-none">
+<div class="w-full h-1 bg-primary shadow-[0_0_20px_4px_#4edea3] animate-scan mix-blend-screen"></div>
+</div>
+<!-- 3D Voxel Cube -->
+<div class="voxel-cube">
+<div class="voxel-face flex items-center justify-center">
+<div class="w-8 h-8 border border-primary/30 rounded-full"></div>
+</div>
+<div class="voxel-face"></div>
+<div class="voxel-face"></div>
+<div class="voxel-face"></div>
+<div class="voxel-face"></div>
+<div class="voxel-face"></div>
+</div>
+<!-- Center point -->
+<div class="absolute w-2 h-2 bg-primary rounded-full shadow-[0_0_20px_#4edea3] animate-pulse-glow"></div>
+</div>
+</div>
+<!-- Terminal Output -->
+<div class="h-1/3 md:h-2/5 w-full bg-[#000000] border-t border-outline-variant/30 p-4 z-20 flex flex-col relative shadow-[0_-10px_30px_rgba(0,0,0,0.8)]">
+<!-- Terminal Header -->
+<div class="flex items-center justify-between mb-2 border-b border-outline-variant/30 pb-2">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[14px]">terminal</span>
+<span class="font-label-caps text-label-caps text-primary/70">Live Terminal Output</span>
+</div>
+<div class="flex gap-1">
+<div class="w-2 h-2 rounded-full bg-outline-variant/50"></div>
+<div class="w-2 h-2 rounded-full bg-outline-variant/50"></div>
+<div class="w-2 h-2 rounded-full bg-primary/50"></div>
+</div>
+</div>
+<!-- Terminal Logs -->
+<div class="flex-1 overflow-y-auto terminal-scroll font-code-sm text-code-sm text-primary/80" id="terminal-output">
+<div class="opacity-50">[SYSTEM] Initializing reverse-engineering protocol...</div>
+<div class="opacity-50">[CRAWL] Fetching robots.txt rules... OK.</div>
+<div class="opacity-50">[CRAWL] Mapping domain structure... Found 42 endpoints.</div>
+<div class="opacity-50">[DISCOVER] Parsing main JS bundles...</div>
+<div class="opacity-50">[DISCOVER] React detected (v18.2.0).</div>
+<div>[ANALYZE] Identifying state management... Zustand detected.</div>
+<div>[ANALYZE] Scanning for CSS framework... Tailwind CSS classes found.</div>
+<div>[ANALYZE] Attempting API route discovery...</div>
+<div class="text-tertiary-fixed">[WARN] Rate limit approaching on /api/graphql. Throttling requests.</div>
+<div class="flex items-center" id="terminal-cursor-line">
+<span class="mr-2">&gt;</span>
+<span class="animate-pulse">_</span>
+</div>
+</div>
+<!-- Terminal Scanline Overlay -->
+<div class="absolute inset-0 pointer-events-none bg-[linear-gradient(rgba(0,0,0,0)_50%,rgba(0,0,0,0.25)_50%)] bg-[length:100%_4px] opacity-20"></div>
+</div>
+</div>
+<script>
+        const terminal = document.getElementById('terminal-output');
+        const cursorLine = document.getElementById('terminal-cursor-line');
+        const logs = [
+            "Extracting vendor chunk...",
+            "Analyzing Next.js build manifest...",
+            "Found dynamic routes: /dashboard/[id]",
+            "Checking for websocket connections...",
+            "WSS endpoint found: wss://ws.example.com",
+            "[SYSTEM] Memory usage stable at 1.2GB"
+        ];
+        
+        async function typeText(text, element) {
+            const textNode = document.createTextNode('');
+            element.appendChild(textNode);
+            for (let i = 0; i < text.length; i++) {
+                textNode.textContent += text.charAt(i);
+                terminal.scrollTop = terminal.scrollHeight;
+                await new Promise(resolve => setTimeout(resolve, 30));
+            }
+        }
+
+        async function runTerminalLogs() {
+            for (const logText of logs) {
+                const newLog = document.createElement('div');
+                const prefix = document.createElement('span');
+                
+                if (logText.startsWith("[SYSTEM]")) {
+                    prefix.textContent = "[SYSTEM] ";
+                } else {
+                    prefix.textContent = "[ANALYZE] ";
+                }
+                
+                newLog.appendChild(prefix);
+                terminal.insertBefore(newLog, cursorLine);
+                
+                const message = logText.replace(/\[.*?\]\s*/, '');
+                await typeText(message, newLog);
+                await new Promise(resolve => setTimeout(resolve, 800));
+            }
+        }
+
+        setTimeout(runTerminalLogs, 1000);
+    </script>
+</body></html>

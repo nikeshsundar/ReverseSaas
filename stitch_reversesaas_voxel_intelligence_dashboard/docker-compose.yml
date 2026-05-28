@@ -1,0 +1,42 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:16
+    container_name: reversesaas-db
+    environment:
+      POSTGRES_DB: reversesaas
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  api:
+    build:
+      context: ./apps/api
+    container_name: reversesaas-api
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@db:5432/reversesaas?schema=public
+      GEMINI_API_KEY: ${GEMINI_API_KEY}
+      PLAYWRIGHT_HEADLESS: "true"
+      ALLOWED_ORIGINS: http://localhost:3000
+    ports:
+      - "8000:8000"
+
+  web:
+    build:
+      context: ./apps/web
+    container_name: reversesaas-web
+    depends_on:
+      - api
+    environment:
+      API_URL: http://api:8000
+    ports:
+      - "3000:3000"
+
+volumes:
+  pgdata:

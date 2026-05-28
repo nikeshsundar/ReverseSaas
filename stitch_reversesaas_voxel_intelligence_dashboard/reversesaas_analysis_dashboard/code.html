@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ReverseSaaS - Results Dashboard</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Config from Brand Anchors -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "secondary-container": "#00a2e6",
+                    "primary": "#4edea3",
+                    "surface-container-lowest": "#0e0e0e",
+                    "secondary-fixed": "#c9e6ff",
+                    "background": "#131313",
+                    "on-background": "#e5e2e1",
+                    "primary-fixed-dim": "#4edea3",
+                    "on-tertiary": "#472a00",
+                    "surface": "#131313",
+                    "inverse-primary": "#006c49",
+                    "tertiary-container": "#e29100",
+                    "on-error": "#690005",
+                    "on-primary-fixed-variant": "#005236",
+                    "inverse-surface": "#e5e2e1",
+                    "surface-container-highest": "#353534",
+                    "on-secondary-fixed-variant": "#004c6e",
+                    "primary-fixed": "#6ffbbe",
+                    "error-container": "#93000a",
+                    "on-surface": "#e5e2e1",
+                    "secondary-fixed-dim": "#89ceff",
+                    "surface-bright": "#3a3939",
+                    "on-secondary-container": "#00344e",
+                    "outline": "#86948a",
+                    "outline-variant": "#3c4a42",
+                    "on-primary-container": "#00422b",
+                    "primary-container": "#10b981",
+                    "error": "#ffb4ab",
+                    "surface-tint": "#4edea3",
+                    "on-primary": "#003824",
+                    "surface-container-low": "#1c1b1b",
+                    "on-surface-variant": "#bbcabf",
+                    "on-primary-fixed": "#002113",
+                    "tertiary-fixed-dim": "#ffb95f",
+                    "inverse-on-surface": "#313030",
+                    "on-secondary": "#00344d",
+                    "surface-variant": "#353534",
+                    "on-error-container": "#ffdad6",
+                    "on-secondary-fixed": "#001e2f",
+                    "on-tertiary-fixed-variant": "#653e00",
+                    "surface-container": "#201f1f",
+                    "surface-container-high": "#2a2a2a",
+                    "tertiary-fixed": "#ffddb8",
+                    "on-tertiary-fixed": "#2a1700",
+                    "tertiary": "#ffb95f",
+                    "secondary": "#89ceff",
+                    "surface-dim": "#131313",
+                    "on-tertiary-container": "#523200"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "margin-page": "40px",
+                    "gutter": "24px",
+                    "unit": "4px",
+                    "panel-padding": "16px",
+                    "stack-gap": "8px"
+            },
+            "fontFamily": {
+                    "body-base": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "display-lg": ["Inter"],
+                    "code-sm": ["JetBrains Mono"],
+                    "label-caps": ["JetBrains Mono"]
+            },
+            "fontSize": {
+                    "body-base": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "code-sm": ["13px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "label-caps": ["11px", {"lineHeight": "16px", "letterSpacing": "0.08em", "fontWeight": "600"}]
+            }
+          }
+        }
+      }
+    </script>
+<style>
+        /* Custom styles for animations and specific effects not easily done with standard tailwind utilities */
+        .glass-panel {
+            background: rgba(10, 10, 10, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(60, 74, 66, 0.3); /* outline-variant */
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* Reactive Lighting Glow */
+        .glass-panel::before {
+            content: '';
+            position: absolute;
+            top: var(--y, -100%);
+            left: var(--x, -100%);
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(78, 222, 163, 0.15) 0%, transparent 70%);
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 0;
+        }
+        .glass-panel:hover::before {
+            opacity: 1;
+        }
+
+        .voxel-card {
+            background: #0a0a0a;
+            border: 1px solid rgba(60, 74, 66, 0.2);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05);
+            transition: transform 0.1s ease, box-shadow 0.1s ease;
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+        
+        .bg-grid-pattern {
+            background-size: 32px 32px;
+            background-image: 
+                linear-gradient(to right, rgba(255,255,255,0.02) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255,255,255,0.02) 1px, transparent 1px);
+        }
+
+        /* Animated connection lines for architecture */
+        .dash-line {
+            stroke-dasharray: 8;
+            animation: dash-flow 2s linear infinite;
+        }
+        @keyframes dash-flow {
+            to { stroke-dashoffset: -16; }
+        }
+
+        /* Pulse light effect on SVG path */
+        .pulse-line {
+            stroke-dasharray: 40 1000;
+            stroke-dashoffset: 0;
+            animation: pulse-flow 3s linear infinite;
+        }
+        @keyframes pulse-flow {
+            0% { stroke-dashoffset: 1040; opacity: 1; }
+            100% { stroke-dashoffset: 0; opacity: 1; }
+        }
+
+        .terminal-scan {
+            background: linear-gradient(to bottom, transparent 50%, rgba(78, 222, 163, 0.05) 50%);
+            background-size: 100% 4px;
+        }
+        
+        /* Scrollbar styling for a technical feel */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #131313; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #3c4a42; 
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #4edea3; 
+        }
+
+        /* Reveal Animation */
+        .reveal {
+            opacity: 0;
+            transform: scale(0.95) translateY(20px);
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-base text-body-base bg-grid-pattern h-screen overflow-hidden flex">
+<!-- 
+      COLUMN 1: Left SideNavBar
+      Applying literal styles from JSON for strict adherence.
+    -->
+<nav class="bg-surface-container-low/90 backdrop-blur-xl border-r border-outline-variant/20 shadow-[4px_0_24px_rgba(0,0,0,0.5)] docked left-0 h-screen w-[280px] fixed left-0 top-0 h-full flex flex-col p-panel-padding z-50">
+<!-- Header -->
+<div class="mb-gutter">
+<div class="flex items-center gap-stack-gap mb-unit">
+<div class="w-8 h-8 rounded-DEFAULT bg-primary/20 flex items-center justify-center border border-primary/30">
+<span class="material-symbols-outlined text-primary" style="font-size: 18px;">radar</span>
+</div>
+<h1 class="font-headline-md text-headline-md text-primary tracking-tighter">Project Alpha</h1>
+</div>
+<div class="font-label-caps text-label-caps text-primary/70 flex items-center gap-2">
+<span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
+                Analysis Active
+            </div>
+</div>
+<!-- Navigation Tabs -->
+<div class="flex-1 flex flex-col gap-unit mt-gutter">
+<!-- Active Tab: Overview -->
+<a class="flex items-center gap-stack-gap p-stack-gap rounded-DEFAULT bg-primary/10 text-primary border-r-4 border-primary hover:translate-x-1 transition-transform duration-200 active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-label-caps text-label-caps uppercase">Overview</span>
+</a>
+<a class="flex items-center gap-stack-gap p-stack-gap rounded-DEFAULT text-on-surface-variant hover:bg-surface-variant/50 hover:translate-x-1 transition-transform duration-200 active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined">layers</span>
+<span class="font-label-caps text-label-caps uppercase">Tech Stack</span>
+</a>
+<a class="flex items-center gap-stack-gap p-stack-gap rounded-DEFAULT text-on-surface-variant hover:bg-surface-variant/50 hover:translate-x-1 transition-transform duration-200 active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined">account_tree</span>
+<span class="font-label-caps text-label-caps uppercase">Node Graph</span>
+</a>
+<a class="flex items-center gap-stack-gap p-stack-gap rounded-DEFAULT text-on-surface-variant hover:bg-surface-variant/50 hover:translate-x-1 transition-transform duration-200 active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined">payments</span>
+<span class="font-label-caps text-label-caps uppercase">Cost Estimator</span>
+</a>
+<a class="flex items-center gap-stack-gap p-stack-gap rounded-DEFAULT text-on-surface-variant hover:bg-surface-variant/50 hover:translate-x-1 transition-transform duration-200 active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined">terminal</span>
+<span class="font-label-caps text-label-caps uppercase">Live Terminal</span>
+</a>
+</div>
+<!-- Footer Links & CTA -->
+<div class="mt-auto flex flex-col gap-unit pt-gutter border-t border-outline-variant/20">
+<a class="flex items-center gap-stack-gap p-stack-gap rounded-DEFAULT text-on-surface-variant hover:bg-surface-variant/50 hover:translate-x-1 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" style="font-size: 16px;">help</span>
+<span class="font-label-caps text-label-caps uppercase">Support</span>
+</a>
+<a class="flex items-center gap-stack-gap p-stack-gap rounded-DEFAULT text-on-surface-variant hover:bg-surface-variant/50 hover:translate-x-1 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" style="font-size: 16px;">code</span>
+<span class="font-label-caps text-label-caps uppercase">API</span>
+</a>
+<button class="mt-stack-gap w-full bg-primary text-on-primary font-label-caps text-label-caps uppercase py-2 px-4 rounded-DEFAULT hover:bg-primary-fixed transition-colors shadow-[0_0_15px_rgba(78,222,163,0.2)]">
+                Export Report
+            </button>
+</div>
+</nav>
+<!-- 
+      MAIN WRAPPER: Accommodates fixed left nav
+    -->
+<div class="flex-1 flex ml-[280px] h-full w-full">
+<!-- 
+          COLUMN 2: Center Report
+        -->
+<main class="flex-1 overflow-y-auto p-margin-page pb-[100px]" id="main-scroll">
+<!-- Section: Startup Overview -->
+<section class="mb-gutter reveal active">
+<div class="glass-panel rounded-xl p-margin-page relative overflow-hidden group interactive-card">
+<!-- Abstract Background Graphic -->
+<div class="absolute -top-24 -right-24 w-64 h-64 bg-primary/10 rounded-full blur-3xl group-hover:bg-primary/20 transition-all duration-700"></div>
+<div class="relative z-10 pointer-events-none">
+<div class="flex items-center justify-between mb-stack-gap">
+<span class="font-code-sm text-code-sm text-primary bg-primary/10 px-2 py-1 rounded border border-primary/20 inline-flex items-center gap-2">
+<span class="material-symbols-outlined" style="font-size: 14px;">verified</span>
+                                TARGET IDENTIFIED
+                            </span>
+<span class="font-code-sm text-code-sm text-on-surface-variant">ID: REV-9942A</span>
+</div>
+<h2 class="font-display-lg text-display-lg text-on-background mb-unit">StripeConnect Clone</h2>
+<p class="font-body-base text-body-base text-on-surface-variant max-w-2xl mb-gutter">
+                            A highly optimized, horizontally scalable payment processing architecture utilizing edge computing for latency reduction and multi-region database clustering for high availability. Estimated build complexity: Severe.
+                        </p>
+<div class="flex gap-stack-gap pointer-events-auto">
+<div class="bg-surface-container/50 border border-outline-variant/30 px-4 py-2 rounded-DEFAULT">
+<div class="font-label-caps text-label-caps text-on-surface-variant mb-1">Estimated MRR</div>
+<div class="font-code-sm text-code-sm text-primary">$<span class="counter" data-target="450">0</span>k+</div>
+</div>
+<div class="bg-surface-container/50 border border-outline-variant/30 px-4 py-2 rounded-DEFAULT">
+<div class="font-label-caps text-label-caps text-on-surface-variant mb-1">Infrastructure Load</div>
+<div class="font-code-sm text-code-sm text-tertiary">~<span class="counter" data-target="10">0</span>k RPS</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Section: Tech Stack -->
+<section class="mb-gutter reveal">
+<h3 class="font-headline-md text-headline-md text-on-surface mb-stack-gap flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">layers</span>
+                    Component Matrix
+                </h3>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-stack-gap">
+<!-- Tech Card 1 -->
+<div class="voxel-card tilt-card rounded-lg p-panel-padding">
+<div class="flex justify-between items-start mb-4">
+<div class="w-8 h-8 rounded bg-surface border border-outline-variant/50 flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary">web</span>
+</div>
+<span class="font-label-caps text-label-caps text-secondary bg-secondary/10 px-1.5 py-0.5 rounded">FRONTEND</span>
+</div>
+<h4 class="font-code-sm text-code-sm text-on-surface font-semibold mb-1">Next.js 14</h4>
+<p class="font-label-caps text-label-caps text-on-surface-variant normal-case">App router, server actions enabled. Vercel hosted.</p>
+</div>
+<!-- Tech Card 2 -->
+<div class="voxel-card tilt-card rounded-lg p-panel-padding">
+<div class="flex justify-between items-start mb-4">
+<div class="w-8 h-8 rounded bg-surface border border-outline-variant/50 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">dns</span>
+</div>
+<span class="font-label-caps text-label-caps text-primary bg-primary/10 px-1.5 py-0.5 rounded">BACKEND</span>
+</div>
+<h4 class="font-code-sm text-code-sm text-on-surface font-semibold mb-1">Go / Gin</h4>
+<p class="font-label-caps text-label-caps text-on-surface-variant normal-case">Microservices architecture. High concurrency routing.</p>
+</div>
+<!-- Tech Card 3 -->
+<div class="voxel-card tilt-card rounded-lg p-panel-padding">
+<div class="flex justify-between items-start mb-4">
+<div class="w-8 h-8 rounded bg-surface border border-outline-variant/50 flex items-center justify-center">
+<span class="material-symbols-outlined text-tertiary">database</span>
+</div>
+<span class="font-label-caps text-label-caps text-tertiary bg-tertiary/10 px-1.5 py-0.5 rounded">DATABASE</span>
+</div>
+<h4 class="font-code-sm text-code-sm text-on-surface font-semibold mb-1">PostgreSQL 16</h4>
+<p class="font-label-caps text-label-caps text-on-surface-variant normal-case">Distributed via Citus. Read replicas active.</p>
+</div>
+<!-- Tech Card 4 -->
+<div class="voxel-card tilt-card rounded-lg p-panel-padding">
+<div class="flex justify-between items-start mb-4">
+<div class="w-8 h-8 rounded bg-surface border border-outline-variant/50 flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary-container">memory</span>
+</div>
+<span class="font-label-caps text-label-caps text-secondary-container bg-secondary-container/10 px-1.5 py-0.5 rounded">CACHE</span>
+</div>
+<h4 class="font-code-sm text-code-sm text-on-surface font-semibold mb-1">Redis Cluster</h4>
+<p class="font-label-caps text-label-caps text-on-surface-variant normal-case">In-memory caching for session and ephemeral states.</p>
+</div>
+</div>
+</section>
+<!-- Section: Architecture Visualization -->
+<section class="mb-gutter reveal">
+<h3 class="font-headline-md text-headline-md text-on-surface mb-stack-gap flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">account_tree</span>
+                    Topology Mapping
+                </h3>
+<div class="glass-panel interactive-card rounded-xl h-[300px] relative flex items-center justify-center overflow-hidden">
+<!-- SVG Background for connecting lines -->
+<svg class="absolute inset-0 w-full h-full pointer-events-none" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<lineargradient id="neonLine" x1="0%" x2="100%" y1="0%" y2="0%">
+<stop offset="0%" stop-color="#3c4a42"></stop>
+<stop offset="50%" stop-color="#4edea3"></stop>
+<stop offset="100%" stop-color="#3c4a42"></stop>
+</lineargradient>
+</defs>
+<!-- Approximated paths for the nodes -->
+<path class="dash-line opacity-50" d="M 150 150 C 300 150, 300 100, 450 100" fill="none" stroke="url(#neonLine)" stroke-width="2"></path>
+<path class="pulse-line" d="M 150 150 C 300 150, 300 100, 450 100" fill="none" stroke="#4edea3" stroke-width="3" style="filter: drop-shadow(0 0 4px #4edea3);"></path>
+<path class="dash-line opacity-50" d="M 150 150 C 300 150, 300 200, 450 200" fill="none" stroke="url(#neonLine)" stroke-width="2"></path>
+<path class="pulse-line" d="M 150 150 C 300 150, 300 200, 450 200" fill="none" stroke="#4edea3" stroke-width="3" style="animation-delay: 1.5s; filter: drop-shadow(0 0 4px #4edea3);"></path>
+<path class="dash-line opacity-50" d="M 450 100 C 600 100, 600 150, 750 150" fill="none" stroke="url(#neonLine)" stroke-width="2"></path>
+<path class="pulse-line" d="M 450 100 C 600 100, 600 150, 750 150" fill="none" stroke="#4edea3" stroke-width="3" style="animation-delay: 0.5s; filter: drop-shadow(0 0 4px #4edea3);"></path>
+<path class="dash-line opacity-50" d="M 450 200 C 600 200, 600 150, 750 150" fill="none" stroke="url(#neonLine)" stroke-width="2"></path>
+<path class="pulse-line" d="M 450 200 C 600 200, 600 150, 750 150" fill="none" stroke="#4edea3" stroke-width="3" style="animation-delay: 2s; filter: drop-shadow(0 0 4px #4edea3);"></path>
+</svg>
+<!-- Nodes -->
+<div class="absolute left-[100px] voxel-card w-24 h-24 rounded-full flex flex-col items-center justify-center z-10 border-primary/50 shadow-[0_0_20px_rgba(78,222,163,0.2)] pointer-events-none">
+<span class="material-symbols-outlined text-on-surface mb-1">devices</span>
+<span class="font-label-caps text-label-caps text-primary">Client</span>
+</div>
+<div class="absolute left-[400px] top-[75px] glass-panel p-3 rounded-lg z-10 border-secondary/30 pointer-events-none">
+<span class="font-code-sm text-code-sm text-secondary flex items-center gap-2">
+<span class="material-symbols-outlined" style="font-size: 16px;">router</span> Edge CDN
+                        </span>
+</div>
+<div class="absolute left-[400px] top-[175px] glass-panel p-3 rounded-lg z-10 border-primary/30 pointer-events-none">
+<span class="font-code-sm text-code-sm text-primary flex items-center gap-2">
+<span class="material-symbols-outlined" style="font-size: 16px;">api</span> API Gateway
+                        </span>
+</div>
+<div class="absolute left-[700px] voxel-card w-24 h-24 rounded-DEFAULT flex flex-col items-center justify-center z-10 border-tertiary/50 pointer-events-none">
+<span class="material-symbols-outlined text-tertiary mb-1">database</span>
+<span class="font-label-caps text-label-caps text-tertiary">DB Cluster</span>
+</div>
+</div>
+</section>
+<!-- Section: 2 Columns for Cost & Roadmap -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-gutter reveal">
+<!-- Infrastructure Cost -->
+<section>
+<h3 class="font-headline-md text-headline-md text-on-surface mb-stack-gap flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">payments</span>
+                        Burn Rate Estimation
+                    </h3>
+<div class="glass-panel interactive-card p-panel-padding rounded-xl h-[240px] flex flex-col justify-end relative">
+<!-- Abstract Chart -->
+<div class="absolute top-4 left-4 font-code-sm text-code-sm text-on-surface-variant pointer-events-none">Est. Monthly Base: <span class="text-error">$<span class="counter" data-target="1250">0</span></span></div>
+<div class="flex items-end justify-between h-32 gap-2 mt-auto border-b border-outline-variant/30 pb-2 pointer-events-none">
+<!-- Bars -->
+<div class="w-1/4 bg-surface-container border border-outline-variant/50 rounded-t-DEFAULT h-[30%] relative group">
+<div class="absolute -top-6 left-1/2 -translate-x-1/2 font-label-caps text-label-caps text-on-surface opacity-0 group-hover:opacity-100 transition-opacity">10k</div>
+</div>
+<div class="w-1/4 bg-surface-container border border-outline-variant/50 rounded-t-DEFAULT h-[45%] relative group">
+<div class="absolute -top-6 left-1/2 -translate-x-1/2 font-label-caps text-label-caps text-on-surface opacity-0 group-hover:opacity-100 transition-opacity">50k</div>
+</div>
+<div class="w-1/4 bg-primary/20 border border-primary/50 rounded-t-DEFAULT h-[70%] relative group shadow-[0_0_15px_rgba(78,222,163,0.1)]">
+<div class="absolute -top-6 left-1/2 -translate-x-1/2 font-label-caps text-label-caps text-primary">100k+</div>
+</div>
+<div class="w-1/4 bg-error/20 border border-error/50 rounded-t-DEFAULT h-[95%] relative group">
+<div class="absolute -top-6 left-1/2 -translate-x-1/2 font-label-caps text-label-caps text-error opacity-0 group-hover:opacity-100 transition-opacity">Scale</div>
+</div>
+</div>
+<div class="flex justify-between font-label-caps text-label-caps text-on-surface-variant pt-2 pointer-events-none">
+<span>Seed</span>
+<span>Series A</span>
+<span class="text-primary">Scale</span>
+<span>Enterprise</span>
+</div>
+</div>
+</section>
+<!-- Build Timeline -->
+<section>
+<h3 class="font-headline-md text-headline-md text-on-surface mb-stack-gap flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">flag</span>
+                        Execution Timeline
+                    </h3>
+<div class="glass-panel interactive-card p-panel-padding rounded-xl h-[240px] overflow-hidden">
+<div class="relative pl-6 border-l border-outline-variant/30 ml-2 space-y-6 h-full py-2 pointer-events-none">
+<!-- Timeline Node -->
+<div class="relative">
+<div class="absolute -left-[31px] top-1 w-3 h-3 rounded-full bg-primary shadow-[0_0_10px_rgba(78,222,163,0.8)]"></div>
+<div class="font-code-sm text-code-sm text-primary mb-1">Weeks 1-2</div>
+<div class="font-body-base text-body-base text-on-surface">Data Schema &amp; Core API</div>
+</div>
+<!-- Timeline Node -->
+<div class="relative">
+<div class="absolute -left-[31px] top-1 w-3 h-3 rounded-full bg-surface border-2 border-primary"></div>
+<div class="font-code-sm text-code-sm text-on-surface-variant mb-1">Weeks 3-4</div>
+<div class="font-body-base text-body-base text-on-surface">Frontend Scaffolding &amp; Auth</div>
+</div>
+<!-- Timeline Node -->
+<div class="relative">
+<div class="absolute -left-[31px] top-1 w-3 h-3 rounded-full bg-surface border-2 border-outline-variant"></div>
+<div class="font-code-sm text-code-sm text-on-surface-variant mb-1">Weeks 5-6</div>
+<div class="font-body-base text-body-base text-on-surface-variant">Payment Integration &amp; Stress Test</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+</main>
+<!-- 
+          COLUMN 3: Right Insights 
+        -->
+<aside class="w-[320px] shrink-0 border-l border-outline-variant/20 bg-surface-container-low/50 overflow-y-auto h-full flex flex-col relative z-20">
+<div class="p-panel-padding border-b border-outline-variant/20 bg-surface-container/30 sticky top-0 backdrop-blur-md">
+<h3 class="font-headline-md text-headline-md text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary">analytics</span>
+                    Intelligence Brief
+                </h3>
+</div>
+<div class="p-panel-padding flex-1 flex flex-col gap-gutter">
+<!-- Overall Score -->
+<div class="voxel-card p-panel-padding rounded-lg flex items-center justify-between">
+<div>
+<div class="font-label-caps text-label-caps text-on-surface-variant mb-1">Reverse Eng. Viability</div>
+<div class="font-display-lg text-display-lg text-primary leading-none"><span class="counter" data-target="84">0</span>%</div>
+</div>
+<div class="w-12 h-12 rounded-full border-4 border-primary border-t-transparent animate-spin" style="animation-duration: 3s;"></div>
+</div>
+<!-- Strategic Summary -->
+<div>
+<h4 class="font-code-sm text-code-sm text-on-surface font-semibold mb-2 border-b border-outline-variant/30 pb-1">Strategic Vectors</h4>
+<ul class="space-y-3 mt-3">
+<li class="flex items-start gap-2">
+<span class="material-symbols-outlined text-error" style="font-size: 18px;">warning</span>
+<div>
+<div class="font-code-sm text-code-sm text-on-surface">Vulnerability Found</div>
+<div class="font-label-caps text-label-caps text-on-surface-variant normal-case">Rate limiting on public endpoints is insufficient.</div>
+</div>
+</li>
+<li class="flex items-start gap-2">
+<span class="material-symbols-outlined text-primary" style="font-size: 18px;">check_circle</span>
+<div>
+<div class="font-code-sm text-code-sm text-on-surface">Optimization Opportunity</div>
+<div class="font-label-caps text-label-caps text-on-surface-variant normal-case">Move static asset rendering entirely to Edge.</div>
+</div>
+</li>
+</ul>
+</div>
+<!-- Raw Terminal Log (Atmospheric) -->
+<div class="mt-auto bg-black rounded-lg border border-outline-variant/30 h-48 flex flex-col overflow-hidden relative group">
+<div class="bg-surface-container p-2 border-b border-outline-variant/30 flex items-center justify-between">
+<span class="font-label-caps text-label-caps text-on-surface-variant">sys.log</span>
+<div class="flex gap-1">
+<div class="w-2 h-2 rounded-full bg-error/50"></div>
+<div class="w-2 h-2 rounded-full bg-tertiary/50"></div>
+<div class="w-2 h-2 rounded-full bg-primary/50"></div>
+</div>
+</div>
+<div class="p-2 font-code-sm text-code-sm text-primary/70 terminal-scan h-full overflow-hidden text-[10px] leading-tight flex flex-col justify-end">
+<div class="opacity-50">[10:42:01] Scanning ports... OK</div>
+<div class="opacity-60">[10:42:05] Analyzing dependency tree...</div>
+<div class="opacity-70">[10:42:09] 45 packages identified.</div>
+<div class="opacity-80">[10:42:14] Extracting API schemas...</div>
+<div class="text-primary group-hover:animate-pulse">[10:42:22] Structuring JSON payload_</div>
+</div>
+</div>
+</div>
+</aside>
+</div>
+<script>
+    // 1. Reactive Lighting for Glass Cards
+    document.querySelectorAll('.interactive-card').forEach(card => {
+        card.addEventListener('mousemove', e => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            card.style.setProperty('--x', `${x}px`);
+            card.style.setProperty('--y', `${y}px`);
+        });
+    });
+
+    // 2. 3D Tilt Effect for Voxel Cards
+    document.querySelectorAll('.tilt-card').forEach(card => {
+        card.addEventListener('mousemove', e => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left; // x position within the element
+            const y = e.clientY - rect.top;  // y position within the element
+            
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            
+            const rotateX = ((y - centerY) / centerY) * -10; // Max 10 deg rotation
+            const rotateY = ((x - centerX) / centerX) * 10;
+            
+            card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+            card.style.boxShadow = `
+                ${-rotateY}px ${rotateX + 4}px 20px rgba(0,0,0,0.5), 
+                inset 0 1px 0 rgba(255,255,255,0.05),
+                0 0 20px rgba(78, 222, 163, 0.1)
+            `;
+            card.style.borderColor = 'rgba(78, 222, 163, 0.3)';
+        });
+
+        card.addEventListener('mouseleave', () => {
+            card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)';
+            card.style.boxShadow = '0 4px 20px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05)';
+            card.style.borderColor = 'rgba(60, 74, 66, 0.2)';
+        });
+    });
+
+    // 3. Stat Counters
+    const counters = document.querySelectorAll('.counter');
+    const speed = 200; // The lower the slower
+
+    const startCounting = (counter) => {
+        const target = +counter.getAttribute('data-target');
+        const count = +counter.innerText;
+        const inc = target / speed;
+
+        if (count < target) {
+            counter.innerText = Math.ceil(count + inc);
+            setTimeout(() => startCounting(counter), 1);
+        } else {
+            counter.innerText = target;
+        }
+    };
+
+    // Run counters when they come into view
+    const observerOptions = {
+        threshold: 0.5
+    };
+
+    const counterObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const counter = entry.target.querySelector('.counter');
+                if(counter) startCounting(counter);
+                
+                // For counters that are deep inside
+                const innerCounters = entry.target.querySelectorAll('.counter');
+                innerCounters.forEach(c => startCounting(c));
+                
+                observer.unobserve(entry.target);
+            }
+        });
+    }, observerOptions);
+
+    document.querySelectorAll('.reveal').forEach(section => {
+        counterObserver.observe(section);
+    });
+
+    // 4. Scroll Reveal
+    const revealObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('active');
+            }
+        });
+    }, {
+        root: document.getElementById('main-scroll'),
+        threshold: 0.1
+    });
+
+    document.querySelectorAll('.reveal').forEach(el => {
+        revealObserver.observe(el);
+    });
+</script>
+</body></html>
